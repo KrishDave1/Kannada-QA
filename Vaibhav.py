@@ -1,5 +1,3 @@
-api_key = sk-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
-
 import openai
 import os
 
