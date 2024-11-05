@@ -6,7 +6,7 @@ import librosa
 model_m = whisper.load_model("medium")
 
 # File path to your audio file
-file_path = r"C:\Users\mitta\OneDrive - iiit-b\Documents\ML-Fiesta-Byte-Synergy-Hackathon\dataset\audiocorpus\SandalWoodNewsStories_249.mp3"
+file_path = r"C:\Users\mitta\OneDrive - iiit-b\Documents\ML-Fiesta-Byte-Synergy-Hackathon\dataset\audiocorpus\SandalWoodNewsStories_257.mp3"
 
 # Load and resample audio to 16kHz
 audio, sr = librosa.load(file_path, sr=16000)
