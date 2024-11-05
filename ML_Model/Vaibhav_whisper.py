@@ -15,3 +15,13 @@ audio = whisper.pad_or_trim(audio) #Pad or trim the audio to have a fixed length
 mel = whisper.log_mel_spectrogram(audio).to(model_m.device) #Compute the mel spectrogram
 _, probs = model_m.detect_language(mel) #Detect the spoken language
 print("Detected language: " + list(probs.keys())[0])
+options = whisper.DecodingOptions(fp16 = False)
+result = whisper.decode(model_m, mel, options)
+print(result.text)
+transcription = model_m.transcribe(file_path, fp16 = False)["text"]
+print(transcription)
+translation = model_m.transcribe(file_path, language='en', fp16 = False)["text"]
+print(translation)
+
+
+
