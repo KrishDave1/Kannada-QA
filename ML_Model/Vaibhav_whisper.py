@@ -63,5 +63,5 @@ def process_audio(file_path, output_dir="output"):
     print(f"Translation saved to {translation_path}")
 
 # Example usage
-file_path = r"C:\Users\mitta\OneDrive - iiit-b\Documents\ML-Fiesta-Byte-Synergy-Hackathon\dataset\audiocorpus\SandalWoodNewsStories_280.mp3"
+file_path = r"C:\Users\krish\OneDrive-MSFT\Subjects5thSemester\ML-Fiesta-Byte-Synergy-Hackathon\Dataset\SandalWoodNewsStories_1.mp3"
 process_audio(file_path)
