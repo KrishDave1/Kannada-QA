@@ -58,3 +58,5 @@ output_file_path = "kannada_translation.txt"
 with open(output_file_path, "w", encoding="utf-8") as file:
     file.write(translation_result)
 print(f"Kannada translation saved to {output_file_path}")
+
+# Translate the entire audio to Kannada
