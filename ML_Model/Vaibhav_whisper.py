@@ -6,7 +6,7 @@ import librosa
 model_m = whisper.load_model("medium")
 
 # File path to your audio file
-file_path = r"C:\Users\mitta\OneDrive - iiit-b\Documents\ML-Fiesta-Byte-Synergy-Hackathon\dataset\audiocorpus\SandalWoodNewsStories_257.mp3"
+file_path = r"C:\Users\mitta\OneDrive - iiit-b\Documents\ML-Fiesta-Byte-Synergy-Hackathon\dataset\audiocorpus\SandalWoodNewsStories_297.mp3"
 
 # Load and resample audio to 16kHz
 audio, sr = librosa.load(file_path, sr=16000)
@@ -43,6 +43,20 @@ for i in range(0, len(audio), chunk_duration * sr):
 full_transcription = " ".join(transcription_result)
 print("Full Transcription:", full_transcription)
 
+# Save the full transcription to a text file
+output_file_path = "kannada_transcription.txt"
+with open(output_file_path, "w", encoding="utf-8") as file:
+    file.write(full_transcription)
+print(f"Kannada transcription saved to {output_file_path}")
+
 # Translate the entire audio to English
 translation_result = model_m.transcribe(file_path, language="en", fp16=False)["text"]
 print("Translation to English:", translation_result)
+
+# Save the translation to a text file
+output_file_path = "kannada_translation.txt"
+with open(output_file_path, "w", encoding="utf-8") as file:
+    file.write(translation_result)
+print(f"Kannada translation saved to {output_file_path}")
+
+# Translate the entire audio to Kannada
