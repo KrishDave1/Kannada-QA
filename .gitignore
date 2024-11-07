@@ -2,7 +2,6 @@
 byteenv
 *.wav
 Dataset
-*.txt
 Fine_tune_Llama_2_ignore.ipynb
 NMT_ignore.ipynb
 rustup-init.exe
