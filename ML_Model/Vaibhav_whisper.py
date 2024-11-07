@@ -52,3 +52,9 @@ print(f"Kannada transcription saved to {output_file_path}")
 # Translate the entire audio to English
 translation_result = model_m.transcribe(file_path, language="en", fp16=False)["text"]
 print("Translation to English:", translation_result)
+
+# Save the translation to a text file
+output_file_path = "kannada_translation.txt"
+with open(output_file_path, "w", encoding="utf-8") as file:
+    file.write(translation_result)
+print(f"Kannada translation saved to {output_file_path}")
