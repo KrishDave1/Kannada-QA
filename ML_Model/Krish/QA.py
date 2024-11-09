@@ -36,7 +36,7 @@ def get_best_answer(question, contexts):
 
 # Step 4: Main Function to Run QA
 def main():
-    directory_path = r"c:\Users\krish\OneDrive-MSFT\Subjects5thSemester\ML-Fiesta-Byte-Synergy-Hackathon\ML_Model\output\translations"
+    directory_path = r"c:\Users\krish\OneDrive-MSFT\Subjects5thSemester\ML-Fiesta-Byte-Synergy-Hackathon\ML_Model\Krish\refined_data"
     data = load_text_files(directory_path)
 
     while True:
