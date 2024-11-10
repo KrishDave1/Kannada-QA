@@ -6,8 +6,8 @@ openai.api_key = "pk-CigHzsmOuWnIaohAxYhWfOjhuXTVOUdEQJBqmSDCWxIHjuiB"
 openai.base_url = "https://api.pawan.krd/pai-001/v1/"
 
 # Directories for input and output
-input_dir = r"c:\Users\krish\OneDrive-MSFT\Subjects5thSemester\ML-Fiesta-Byte-Synergy-Hackathon\ML_Model\output\translations"  # Directory containing the original text files
-output_dir = r"c:\Users\krish\OneDrive-MSFT\Subjects5thSemester\ML-Fiesta-Byte-Synergy-Hackathon\ML_Model\Krish\refined_data"  # Directory to store refined summary files
+input_dir = r"C:\Users\Valmik Belgaonkar\OneDrive\Desktop\ML-Fiesta-Byte-Synergy-Hackathon\output\translations"  # Directory containing the original text files
+output_dir = r"C:\Users\Valmik Belgaonkar\OneDrive\Desktop\ML-Fiesta-Byte-Synergy-Hackathon\ML_Model\Krish\refined_data"  # Directory to store refined summary files
 
 # Ensure the output directory exists
 os.makedirs(output_dir, exist_ok=True)
@@ -33,7 +33,7 @@ for filename in os.listdir(input_dir):
         input_file_path = os.path.join(input_dir, filename)
 
         # Read the content of the current text file
-        with open(input_file_path, "r") as file:
+        with open(input_file_path, "r", encoding="utf-8") as file:
             content = file.read()
 
         # Summarize the content
@@ -41,7 +41,7 @@ for filename in os.listdir(input_dir):
 
         # Write the summarized content to a new file in the output directory
         output_file_path = os.path.join(output_dir, filename)
-        with open(output_file_path, "w") as file:
+        with open(output_file_path, "w", encoding="utf-8") as file:
             file.write(summarized_content)
 
         print(f"Summarized {filename} and saved to {output_file_path}")
