@@ -1,12 +1,12 @@
 import os
 import whisper
-import librosa
 from transformers import pipeline
 import streamlit as st
-from streamlit_webrtc import webrtc_streamer, AudioProcessorBase, ClientSettings, WebRtcMode
+from streamlit_webrtc import webrtc_streamer, AudioProcessorBase, WebRtcMode
 import tempfile
 import numpy as np
 import soundfile as sf
+import time
 
 # Load the Whisper model
 model_m = whisper.load_model("medium")
@@ -52,6 +52,14 @@ st.title("Audio Question Answering System")
 # File uploader for pre-recorded audio file input
 audio_file = st.file_uploader("Upload an audio file", type=["wav", "mp3", "m4a"])
 
+def close_browser():
+    st.write(
+        """<script>
+        setTimeout(function() { window.close(); }, 5000);
+        </script>""",
+        unsafe_allow_html=True,
+    )
+
 if audio_file is not None:
     with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as f:
         f.write(audio_file.getbuffer())
@@ -67,6 +75,13 @@ if audio_file is not None:
         st.write("Finding the best answer from context...")
         answer = get_best_answer(question, data)
         st.write(f"Answer: {answer}")
+
+        # Display final message, close app, and close browser tab
+        st.write("Thanks for using this")
+        time.sleep(5)
+        st.stop()  # Stops the Streamlit app
+        os._exit(0)  # Terminates the command-line process
+        close_browser()  # Injects JavaScript to close the browser tab
 
     # Clean up temporary file
     os.remove(temp_audio_path)
@@ -87,9 +102,8 @@ class AudioProcessor(AudioProcessorBase):
 webrtc_ctx = webrtc_streamer(
     key="audio",
     mode=WebRtcMode.SENDONLY,
-    client_settings=ClientSettings(
-        media_stream_constraints={"audio": True, "video": False}
-    ),
+    rtc_configuration={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]},  # Adjusted RTC configuration
+    media_stream_constraints={"audio": True, "video": False},
     audio_processor_factory=AudioProcessor,
 )
 
@@ -111,6 +125,13 @@ if st.button("Process Recorded Audio"):
             st.write("Finding the best answer from context...")
             answer = get_best_answer(question, data)
             st.write(f"Answer: {answer}")
+
+            # Display final message, close app, and close browser tab
+            st.write("Thanks for using this")
+            time.sleep(5)
+            st.stop()  # Stops the Streamlit app
+            os._exit(0)  # Terminates the command-line process
+            close_browser()  # Injects JavaScript to close the browser tab
 
         # Clean up temporary file
         os.remove(temp_audio_path)
