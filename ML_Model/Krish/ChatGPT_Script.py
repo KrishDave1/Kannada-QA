@@ -6,8 +6,8 @@ openai.api_key = "pk-CigHzsmOuWnIaohAxYhWfOjhuXTVOUdEQJBqmSDCWxIHjuiB"
 openai.base_url = "https://api.pawan.krd/pai-001/v1/"
 
 # Directories for input and output
-input_dir = r"C:\Users\Valmik Belgaonkar\OneDrive\Desktop\ML-Fiesta-Byte-Synergy-Hackathon\output\translations"  # Directory containing the original text files
-output_dir = r"C:\Users\Valmik Belgaonkar\OneDrive\Desktop\ML-Fiesta-Byte-Synergy-Hackathon\ML_Model\Krish\refined_data"  # Directory to store refined summary files
+input_dir = r"C:\Users\krish\OneDrive-MSFT\Subjects5thSemester\ML-Fiesta-Byte-Synergy-Hackathon\output\translations"  # Directory containing the original text files
+output_dir = r"C:\Users\krish\OneDrive-MSFT\Subjects5thSemester\ML-Fiesta-Byte-Synergy-Hackathon\ML_Model\Krish\refined_data"  # Directory to store refined summary files
 
 # Ensure the output directory exists
 os.makedirs(output_dir, exist_ok=True)
@@ -20,7 +20,7 @@ def summarize_text(content):
         messages=[
             {
                 "role": "user",
-                "content": f"Please summarize this into a paragraph. It should contain all the important details of the paragraph, including any important statistics and numbers.Here is the below paragraph:\n\n{content}",
+                "content": f"Please summarize this into a paragraph. It should contain all the important details of the paragraph, including any important statistics and numbers.The output should contain only refined plain text.Here is the below paragraph:\n\n{content}",
             },
         ],
     )

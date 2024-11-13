@@ -26,7 +26,9 @@ def load_text_files(directory_path):
     return data
 
 # Load all contexts from the text files
-data = load_text_files(r"C:\Users\Valmik Belgaonkar\OneDrive\Desktop\ML-Fiesta-Byte-Synergy-Hackathon\ML_Model\Krish\refined_data")
+data = load_text_files(
+    r"C:\Users\krish\OneDrive-MSFT\Subjects5thSemester\ML-Fiesta-Byte-Synergy-Hackathon\ML_Model\Krish\refined_data"
+)
 
 # Function to transcribe audio using Whisper
 def transcribe_audio(file_path):
