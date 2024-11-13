@@ -20,7 +20,7 @@ def summarize_text(content):
         messages=[
             {
                 "role": "user",
-                "content": f"Please summarize this into a paragraph. It should contain all the important details of the paragraph, including any important statistics and numbers.Here is the below paragraph:\n\n{content}",
+                "content": f"Please summarize this into a paragraph. It should contain all the important details of the paragraph, including any important statistics and numbers.The output should contain only refined plain text.Here is the below paragraph:\n\n{content}",
             },
         ],
     )

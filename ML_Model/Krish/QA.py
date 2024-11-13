@@ -53,7 +53,7 @@ def get_best_answer(question, contexts, knowledge_base):
 
 # Step 6: Main Function with Feedback Mechanism
 def main():
-    directory_path = r"C:\Users\mitta\OneDrive - iiit-b\Documents\ML-Fiesta-Byte-Synergy-Hackathon\ML_Model\Krish\refined_data"
+    directory_path = r"C:\Users\krish\OneDrive-MSFT\Subjects5thSemester\ML-Fiesta-Byte-Synergy-Hackathon\ML_Model\Krish\refined_data"
     data = load_text_files(directory_path)
     knowledge_base = load_knowledge_base()
 
