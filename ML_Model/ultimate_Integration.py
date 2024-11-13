@@ -109,6 +109,9 @@ webrtc_ctx = webrtc_streamer(
     audio_processor_factory=AudioProcessor,
 )
 
+import streamlit as st
+import time
+
 if st.button("Process Recorded Audio"):
     if webrtc_ctx.audio_processor and webrtc_ctx.audio_processor.audio_frames:
         # Concatenate audio frames and save to a temporary file
@@ -128,14 +131,17 @@ if st.button("Process Recorded Audio"):
             answer = get_best_answer(question, data)
             st.write(f"Answer: {answer}")
 
-            # Display final message, close app, and close browser tab
+            # Display final message and stop app
             st.write("Thanks for using this")
             time.sleep(5)
-            st.stop()  # Stops the Streamlit app
-            os._exit(0)  # Terminates the command-line process
-            close_browser()  # Injects JavaScript to close the browser tab
 
-        # Clean up temporary file
-        os.remove(temp_audio_path)
+            # Use session state to stop app gracefully
+            st.session_state["stop_app"] = True
+            # Clean up temporary file
+            os.remove(temp_audio_path)
+
     else:
         st.write("Please record audio first.")
+
+if "stop_app" in st.session_state and st.session_state["stop_app"]:
+    st.stop()  # Stop the app gracefully
