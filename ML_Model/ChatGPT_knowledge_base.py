@@ -8,8 +8,8 @@ from nltk.tokenize import sent_tokenize
 nltk.download('punkt')
 
 # Set OpenAI API key (if using OpenAI API)
-openai.api_key = "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"
-# openai.base_url = "https://api.pawan.krd/pai-001/v1/"
+openai.api_key = "pk-TZfTgxpJUKyFRTsfNFnoQjxZxXrppMbbusgmIfqFNsTUzTFW"
+openai.base_url = "https://api.pawan.krd/pai-001/v1/"
 
 # Directory containing .txt files
 TXT_FILES_DIR = r"C:\Users\Valmik Belgaonkar\OneDrive\Desktop\ML-Fiesta-Byte-Synergy-Hackathon\ML_Model\Krish\refined_data"
@@ -29,11 +29,22 @@ def save_knowledge_base(knowledge_base):
 
 def generate_questions_answers(content):
     """Generate 5 questions and answers based on text content using ChatCompletion API."""
-    response = openai.ChatCompletion.create(
+    # response = openai.ChatCompletion.create(
+    #     model="gpt-3.5-turbo",  # or use "gpt-4" if you have access
+    #     messages=[
+    #         {"role": "system", "content": "Generate 5 question-answer pairs based on the following text."},
+    #         {"role": "user", "content": content}
+    #     ],
+    #     max_tokens=500,
+    #     temperature=0.5,
+    # )
+    response = openai.chat.completions.create(
         model="gpt-3.5-turbo",  # or use "gpt-4" if you have access
         messages=[
-            {"role": "system", "content": "Generate 5 question-answer pairs based on the following text."},
-            {"role": "user", "content": content}
+            {
+                "role": "user",
+                "content": f"Generate 5 question-answer pairs based on the following text:\n\n{content}"
+            }
         ],
         max_tokens=500,
         temperature=0.5,
