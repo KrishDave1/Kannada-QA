@@ -1,62 +1,97 @@
+import os
+import whisper
+from transformers import pipeline
 import streamlit as st
+from streamlit_webrtc import webrtc_streamer, AudioProcessorBase, WebRtcMode
 import sounddevice as sd
 from scipy.io.wavfile import write
 from gtts import gTTS
-import speech_recognition as sr
 import tempfile
+import numpy as np
+import soundfile as sf
 from io import BytesIO
-import os
 
-# Streamlit app title
-st.title("Voice to MP3 Converter")
+# Load the Whisper model
+model_m = whisper.load_model("medium")
 
-# Set sample rate and duration for recording
-sample_rate = 44100  # Sample rate in Hz
-duration = 20  # Duration in seconds
+# Define the question-answering pipeline
+qa_pipeline = pipeline(
+    "question-answering", model="bert-large-uncased-whole-word-masking-finetuned-squad"
+)
 
-# Record function using sounddevice
+# Function to load text files and combine them into a single context
+def load_text_files(directory_path):
+    data = []
+    for file_name in os.listdir(directory_path):
+        file_path = os.path.join(directory_path, file_name)
+        with open(file_path, "r", encoding="utf-8") as file:
+            data.append(file.read())
+    return data
+
+# Load all contexts from the text files
+data = load_text_files(r"C:\Users\mitta\OneDrive - iiit-b\Documents\ML-Fiesta-Byte-Synergy-Hackathon\ML_Model\Krish\refined_data")
+
+# Function to transcribe audio using Whisper
+def transcribe_audio(file_path):
+    result = model_m.transcribe(file_path)
+    return result["text"]
+
+# Function to find the best answer from the context
+def get_best_answer(question, contexts):
+    best_answer = ""
+    best_score = 0
+
+    for context in contexts:
+        result = qa_pipeline(question=question, context=context)
+        if result["score"] > best_score:
+            best_answer = result["answer"]
+            best_score = result["score"]
+
+    return best_answer
+
+# Define the Streamlit frontend
+st.title("Audio Question Answering System")
+
+# Record audio function
 def record_audio(duration, sample_rate):
-    st.info("Recording for {} seconds...".format(duration))
+    st.info(f"Recording for {duration} seconds...")
     audio = sd.rec(int(duration * sample_rate), samplerate=sample_rate, channels=1, dtype="int16")
-    sd.wait()  # Wait until recording is finished
+    sd.wait()
     st.success("Recording completed!")
     return audio
 
-# Function to transcribe audio
-def transcribe_audio(file_path):
-    recognizer = sr.Recognizer()
-    with sr.AudioFile(file_path) as source:
-        audio_data = recognizer.record(source)
-        try:
-            text = recognizer.recognize_google(audio_data)
-            return text
-        except sr.UnknownValueError:
-            return "Could not understand the audio"
-        except sr.RequestError:
-            return "Speech Recognition service error"
-
-# Button to start recording
-if st.button("Record and Convert"):
+# Button to record, convert to MP3, and process
+if st.button("Record and Process Audio"):
+    sample_rate = 44100  # Sample rate in Hz
+    duration = 15  # Duration in seconds
+    
     # Record audio
     audio_data = record_audio(duration, sample_rate)
+    
     # Save as WAV file
     with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as temp_wav_file:
         write(temp_wav_file.name, sample_rate, audio_data)
         temp_wav_path = temp_wav_file.name
 
-    # Transcribe the audio file
-    transcription = transcribe_audio(temp_wav_path)
-    st.write("Transcription: ", transcription)
+    # Convert WAV to MP3
+    with open(temp_wav_path, "rb") as f:
+        question = transcribe_audio(temp_wav_path)
+        st.write(f"Transcribed Question: {question}")
 
-    # Convert transcription to MP3
-    tts = gTTS(text=transcription, lang='en')
-    mp3_fp = BytesIO()
-    tts.write_to_fp(mp3_fp)
-    mp3_fp.seek(0)
+        # Get the best answer
+        st.write("Finding the best answer from context...")
+        answer = get_best_answer(question, data)
+        st.write(f"Answer: {answer}")
 
-    # Playback and download
-    st.audio(mp3_fp, format="audio/mp3")
-    st.download_button("Download MP3", mp3_fp, file_name="recorded_audio.mp3")
+        # Convert transcription to MP3 for download
+        tts = gTTS(text=answer, lang="en")
+        mp3_fp = BytesIO()
+        tts.write_to_fp(mp3_fp)
+        mp3_fp.seek(0)
+        
+        # Playback and download
+        st.audio(mp3_fp, format="audio/mp3")
+        st.download_button("Download MP3 Answer", mp3_fp, file_name="answer.mp3")
 
-    # Clean up the temp WAV file
+    # Clean up temporary files
     os.remove(temp_wav_path)
