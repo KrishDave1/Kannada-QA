@@ -12,8 +12,8 @@ openai.api_key = "pk-TZfTgxpJUKyFRTsfNFnoQjxZxXrppMbbusgmIfqFNsTUzTFW"
 openai.base_url = "https://api.pawan.krd/pai-001/v1/"
 
 # Directory containing .txt files
-TXT_FILES_DIR = r"C:\Users\Valmik Belgaonkar\OneDrive\Desktop\ML-Fiesta-Byte-Synergy-Hackathon\ML_Model\Krish\refined_data"
-KNOWLEDGE_BASE_PATH = r"C:\Users\Valmik Belgaonkar\OneDrive\Desktop\ML-Fiesta-Byte-Synergy-Hackathon\ML_Model\Krish\knowledge_base.json"
+TXT_FILES_DIR = r"C:\Users\mitta\OneDrive - iiit-b\Documents\ML-Fiesta-Byte-Synergy-Hackathon\ML_Model\Krish\refined_data"
+KNOWLEDGE_BASE_PATH = r"C:\Users\mitta\OneDrive - iiit-b\Documents\ML-Fiesta-Byte-Synergy-Hackathon\ML_Model\Krish\knowledge_base.json"
 
 def load_knowledge_base():
     """Load or create a knowledge base JSON file."""
