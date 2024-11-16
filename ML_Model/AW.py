@@ -1,86 +1,85 @@
 import os
-import sounddevice as sd
-from scipy.io.wavfile import write
-import tempfile
-import streamlit as st
+import torch
 import whisper
+import librosa
 from transformers import pipeline
+from sentence_transformers import SentenceTransformer, util
+import gradio as gr
 
-# Step 1: Load the Text File as a Knowledge Base
-def load_knowledge_file(file_path):
-    with open(file_path, "r", encoding="utf-8") as file:
-        return file.read()
+# Set the device to GPU if available
+device = "cuda" if torch.cuda.is_available() else "cpu"
 
-# Step 2: Initialize the QA Model
+# Load models
+model_m = whisper.load_model("medium", device=device)
 qa_pipeline = pipeline(
-    "question-answering", model="bert-large-uncased-whole-word-masking-finetuned-squad"
+    'question-answering',
+    model="google-bert/bert-large-uncased-whole-word-masking-finetuned-squad",
+    device=0 if device == "cuda" else -1
 )
+semantic_model = SentenceTransformer('all-MiniLM-L6-v2')
 
-# Step 3: Function to Find the Best Answer in the Text File
-def get_best_answer(question, context):
-    try:
-        # Use the QA pipeline to find the answer in the context
-        result = qa_pipeline(question=question, context=context)
-        return result["answer"]
-    except Exception as e:
-        return f"Could not find a specific answer. Please refine your question. ({str(e)})"
-
-# Step 4: Function to Record Audio
-def record_audio(duration, sample_rate):
-    st.info(f"Recording for {duration} seconds...")
-    audio = sd.rec(int(duration * sample_rate), samplerate=sample_rate, channels=1, dtype="int16")
-    sd.wait()
-    st.success("Recording completed!")
-    return audio
-
-# Step 5: Function to Transcribe Audio Using Whisper
-model_m = whisper.load_model("medium")
-
-def transcribe_audio(file_path):
-    result = model_m.transcribe(file_path)
+# Helper functions
+def transcribe_question(input_question_file):
+    question_audio, sr = librosa.load(input_question_file, sr=16000)
+    whisper_audio = torch.tensor(question_audio, dtype=torch.float32).to(device)
+    result = model_m.transcribe(whisper_audio, language="en", fp16=torch.cuda.is_available())
     return result["text"]
 
-# Step 6: Main Function
-def main():
-    # Path to the text file containing all knowledge
-    knowledge_file_path = r"C:\Users\mitta\OneDrive - iiit-b\Documents\ML-Fiesta-Byte-Synergy-Hackathon\ML_Model\combined_output1.txt"  # Replace with the path to your file
-    context = load_knowledge_file(knowledge_file_path)
+def generate_answer(question_text, context):
+    answer = qa_pipeline({
+        "question": question_text,
+        "context": context
+    })
+    return answer["answer"]
 
-    # Streamlit interface
-    st.title("Audio Question Answering System")
-    sample_rate = 44100  # Sample rate in Hz
-    duration = 15  # Duration in seconds
+def semantic_search(query, segments):
+    query_embedding = semantic_model.encode(query, convert_to_tensor=True)
+    segment_embeddings = semantic_model.encode(segments, convert_to_tensor=True)
+    similarities = util.pytorch_cos_sim(query_embedding, segment_embeddings)[0]
+    most_similar_idx = torch.argmax(similarities).item()
+    return segments[most_similar_idx]
 
-    st.write("You can either record your question or type it directly.")
+def speech_based_qa_pipeline(input_question_file, transcription_files):
+    question_text = transcribe_question(input_question_file)
+    segments = []
+    for file_path in transcription_files:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            segments.append(f.read().strip())
+    relevant_segment = semantic_search(question_text, segments)
+    final_answer = generate_answer(question_text, relevant_segment)
+    return question_text, final_answer
 
-    # Record and process audio
-    if st.button("Record and Process Audio"):
-        # Record audio
-        audio_data = record_audio(duration, sample_rate)
+# Gradio function wrapper
+def gradio_pipeline(audio_file):
+    if isinstance(audio_file, str):
+        file_path = audio_file
+    else:
+        # Save the file buffer to a temporary file
+        temp_file_path = "temp_audio_file.wav"
+        with open(temp_file_path, "wb") as f:
+            f.write(audio_file.read())
+        file_path = temp_file_path
 
-        # Save the recorded audio as a WAV file
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as temp_wav_file:
-            write(temp_wav_file.name, sample_rate, audio_data)
-            temp_audio_path = temp_wav_file.name
+    # Path to transcription files
+    transcription_files = [
+        r"C:\Users\mitta\OneDrive - iiit-b\Documents\ML-Fiesta-Byte-Synergy-Hackathon\ML_Model\combined_output1.txt"
+    ]
 
-        # Transcribe the audio to text using Whisper
-        st.write("Transcribing audio...")
-        question = transcribe_audio(temp_audio_path)
-        st.write(f"Transcribed Question: {question}")
+    question_text, final_answer = speech_based_qa_pipeline(file_path, transcription_files)
+    
+    # Clean up temporary file if created
+    if file_path == "temp_audio_file.wav":
+        os.remove(file_path)
 
-        # Get the best answer from the text file
-        answer = get_best_answer(question, context)
-        st.write(f"Answer: {answer}")
+    return f"Question: {question_text}\nAnswer: {final_answer}"
 
-        # Clean up temporary files
-        os.remove(temp_audio_path)
+# Gradio Interface
+iface = gr.Interface(
+    fn=gradio_pipeline,
+    inputs=gr.Audio(type="filepath"),  # Use 'filepath' for audio
+    outputs="text",
+    title="Speech-Based QA System",
+    description="Upload an audio file containing your question. The system will process the question and return an answer based on the knowledge base."
+)
 
-    # Option for direct text input as a question
-    question = st.text_input("Or, type your question directly:")
-    if question:
-        # Get the best answer from the text file
-        answer = get_best_answer(question, context)
-        st.write(f"Answer: {answer}")
-
-if __name__ == "__main__":
-    main()
+iface.launch(debug=True)
