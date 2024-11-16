@@ -1,44 +1,54 @@
-import pymongo
+from pymongo.mongo_client import MongoClient
+from pymongo.server_api import ServerApi
 import requests
 import openai
+from urllib.parse import quote_plus
+from pymongo import MongoClient
+# from langchain.embeddings.openai import OpenAIEmbeddings
+# from langchain.vectorstores import MongoDBAtlasVectorSearch
+# from langchain.document_loaders import DirectoryLoader
+from langchain_community.embeddings.openai import OpenAIEmbeddings
+from langchain_community.vectorstores import MongoDBAtlasVectorSearch
+from langchain_community.document_loaders import DirectoryLoader
+# from langchain.llms import openai
+# from langchain.chains import retrieval_qa
+from langchain_community.llms import openai
+from langchain_community import retrievers
+import gradio
+from gradio.themes.base import Base
+import os
 
-client = pymongo.MongoClient("mongodb+srv://valmik0000000:valmik@mongo7@valmikcluster0.hdqee.mongodb.net/?retryWrites=true&w=majority&appName=ValmikCluster0")
+print(os.getenv("OPEN_API_KEY"))
+
+# Encode the username and password
+username = quote_plus("valmik0000000")
+password = quote_plus("valmik@mongo7")  # Replace with your actual password
+
+uri = f"mongodb+srv://{username}:{password}@valmikcluster0.hdqee.mongodb.net/?retryWrites=true&w=majority&appName=ValmikCluster0"
+client = MongoClient(uri, server_api=ServerApi('1'))
+
+try:
+    client.admin.command('ping')
+    print("Pinged your deployment. You successfully connected to MongoDB!")
+except Exception as e:
+    print(e)
 
 hf_token = "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"
 
-db = client.sample_mflix
-collection = db.movies
+dbName = "ML_Fiesta"
+collectionName = "translations"
+collection = client[dbName][collectionName]
 
 hf_token = "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"
 embedding_url = "https://api-inference.huggingface.co/pipeline/feature-extraction/sentence-transformers/all-MiniLM-L6-v2"
 
-def generate_embedding(text: str) -> list[float]:
+open_api_key = "pk-CigHzsmOuWnIaohAxYhWfOjhuXTVOUdEQJBqmSDCWxIHjuiB"
 
-  response = requests.post(
-    embedding_url,
-    headers={"Authorization": f"Bearer {hf_token}"},
-    json={"inputs": text})
+loader = DirectoryLoader(r"C:\Users\Valmik Belgaonkar\OneDrive\Desktop\ML-Fiesta-Byte-Synergy-Hackathon\ML_Model\Krish\refined_data", glob="./*.txt", show_progress=True)
+data = loader.load()
 
-  if response.status_code != 200:
-    raise ValueError(f"Request failed with status code {response.status_code}: {response.text}")
+# embeddings = OpenAIEmbeddings(open_api_key="pk-CigHzsmOuWnIaohAxYhWfOjhuXTVOUdEQJBqmSDCWxIHjuiB")
 
-  return response.json()
+embeddings = OpenAIEmbeddings(openai_api_key=os.getenv("OPENAI_API_KEY") or "pk-CigHzsmOuWnIaohAxYhWfOjhuXTVOUdEQJBqmSDCWxIHjuiB")
 
-# for doc in collection.find({'plot':{"$exists": True}}).limit(50):
-#   doc['plot_embedding_hf'] = generate_embedding(doc['plot'])
-#   collection.replace_one({'_id': doc['_id']}, doc)
-
-query = "imaginary characters from outer space at war"
-
-results = collection.aggregate([
-  {"$vectorSearch": {
-    "queryVector": generate_embedding(query),
-    "path": "plot_embedding_hf",
-    "numCandidates": 100,
-    "limit": 4,
-    "index": "PlotSemanticSearch",
-      }}
-])
-
-for document in results:
-    print(f'Movie Name: {document["title"]},\nMovie Plot: {document["plot"]}\n')
+vectorStore = MongoDBAtlasVectorSearch.from_documents(data, embeddings, collection=collection)
