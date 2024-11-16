@@ -6,8 +6,8 @@ openai.api_key = "pk-CigHzsmOuWnIaohAxYhWfOjhuXTVOUdEQJBqmSDCWxIHjuiB"
 openai.base_url = "https://api.pawan.krd/pai-001/v1/"
 
 # Directories for input and output
-input_dir = r"C:\Users\Valmik Belgaonkar\OneDrive\Desktop\ML-Fiesta-Byte-Synergy-Hackathon\output\translations"  # Directory containing the original text files
-output_dir = r"C:\Users\Valmik Belgaonkar\OneDrive\Desktop\ML-Fiesta-Byte-Synergy-Hackathon\ML_Model\Krish\refined_data"  # Directory to store refined summary files
+input_dir = r"C:\Users\krish\OneDrive-MSFT\Subjects5thSemester\ML-Fiesta-Byte-Synergy-Hackathon\output\translations"  # Directory containing the original text files
+output_dir = r"C:\Users\krish\OneDrive-MSFT\Subjects5thSemester\ML-Fiesta-Byte-Synergy-Hackathon\ML_Model\Krish\refined_data"  # Directory to store refined summary files
 
 # Ensure the output directory exists
 os.makedirs(output_dir, exist_ok=True)
