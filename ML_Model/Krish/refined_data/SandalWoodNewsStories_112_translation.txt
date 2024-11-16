@@ -1,0 +1,1 @@
+Certainly! To assist you effectively, I need the input text that contains redundant, irrelevant, or non-informative content which needs to be refined for a BERT-based QA model. Please provide the text you wish to have edited so that I can help you remove unnecessary parts while preserving all important details and context.
