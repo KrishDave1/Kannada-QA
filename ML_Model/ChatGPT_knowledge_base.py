@@ -12,8 +12,9 @@ openai.api_key = "pk-TZfTgxpJUKyFRTsfNFnoQjxZxXrppMbbusgmIfqFNsTUzTFW"
 openai.base_url = "https://api.pawan.krd/pai-001/v1/"
 
 # Directory containing .txt files
-TXT_FILES_DIR = r"C:\Users\mitta\OneDrive - iiit-b\Documents\ML-Fiesta-Byte-Synergy-Hackathon\ML_Model\Krish\refined_data"
-KNOWLEDGE_BASE_PATH = r"C:\Users\mitta\OneDrive - iiit-b\Documents\ML-Fiesta-Byte-Synergy-Hackathon\ML_Model\Krish\knowledge_base.json"
+TXT_FILES_DIR = r"C:\Users\krish\OneDrive-MSFT\Subjects5thSemester\ML-Fiesta-Byte-Synergy-Hackathon\ML_Model\Krish\refined_data"
+KNOWLEDGE_BASE_PATH = r"C:\Users\krish\OneDrive-MSFT\Subjects5thSemester\ML-Fiesta-Byte-Synergy-Hackathon\ML_Model\Krish\knowledge_base.json"
+
 
 def load_knowledge_base():
     """Load or create a knowledge base JSON file."""
@@ -50,7 +51,7 @@ def generate_questions_answers(content):
         temperature=0.5,
     )
     
-    generated_text = response.choices[0].message['content'].strip()
+    generated_text = response.choices[0].message.content
     pairs = [tuple(qa.split("A:")) for qa in generated_text.split("Q:") if "A:" in qa]
     
     questions_answers = {}
