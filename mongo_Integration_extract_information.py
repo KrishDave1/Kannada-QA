@@ -63,7 +63,7 @@ def query_data(query) -> str:
     Querying data loaded in Mongo DB.
     """
     # Use the vector store's retriever to find relevant documents
-    retriever = vectorStore.as_retriever(search_kwargs={"K": 20})
+    retriever = vectorStore.as_retriever(search_kwargs={"K": 40})
     retrieved_docs = retriever.get_relevant_documents(query)
 
     # Combine retrieved documents as context for the model
@@ -79,6 +79,8 @@ def query_data(query) -> str:
     # Ask the question with the context
     prompt = f"Context: {context}\n\nQuestion: {query}"
 
+    print(f"Query: {query}")
+
     # Use the question-answering pipeline to get the answer
     response = qa_pipeline(question=query, context=context)
     
@@ -93,9 +95,17 @@ queries = [
     "Which government body has been formed to combat the blood moon thieves?", 
     "Where is the stronghold of the blood moon thieves?",
     "Who does Baba obtain contact information for?",
-    "Where does Baba try to meet Somwara Siguna?"
+    "Where does Baba try to meet Somwara Siguna?",
+    "What is the potential earnings from one Shrikanda Gita?",
+    "How much can be earned from 100 Shrikandas?",
+    "When did India's agricultural landscape undergo significant transformation?",
+    "Which industries have shown interest in Shrikanda cultivation?",
+    "Who is mentioned as an example of successful Shrikanda farming on both small and large scales?",
+    "What is the annual demand for Shrikanda?",
+    "What does the course offered by the Freedom App Research Team include?"
 ]
 try:
-    print(query_data(query=queries[5]))
+    for query in queries:
+      print(query_data(query=query))
 except Exception as e:
     print(e)
