@@ -9,7 +9,7 @@ from pymongo import MongoClient
 # from langchain.document_loaders import DirectoryLoader
 from langchain_community.embeddings.openai import OpenAIEmbeddings
 from langchain_community.vectorstores import MongoDBAtlasVectorSearch
-from langchain_community.document_loaders import DirectoryLoader
+from langchain_community.document_loaders import DirectoryLoader, TextLoader
 # from langchain.llms import openai
 # from langchain.chains import retrieval_qa
 from langchain_community.llms import openai
@@ -42,13 +42,25 @@ collection = client[dbName][collectionName]
 hf_token = "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"
 embedding_url = "https://api-inference.huggingface.co/pipeline/feature-extraction/sentence-transformers/all-MiniLM-L6-v2"
 
-open_api_key = "pk-CigHzsmOuWnIaohAxYhWfOjhuXTVOUdEQJBqmSDCWxIHjuiB"
+# open_api_key = "pk-CigHzsmOuWnIaohAxYhWfOjhuXTVOUdEQJBqmSDCWxIHjuiB"
+open_api_key = "sk-mnopqrstuvwxabcdmnopqrstuvwxabcdmnopqrst"
 
-loader = DirectoryLoader(r"C:\Users\Valmik Belgaonkar\OneDrive\Desktop\ML-Fiesta-Byte-Synergy-Hackathon\ML_Model\Krish\refined_data", glob="./*.txt", show_progress=True)
+loader = DirectoryLoader(
+    r"C:\Users\krish\OneDrive-MSFT\Subjects5thSemester\ML-Fiesta-Byte-Synergy-Hackathon\ML_Model\Krish\refined_data",
+    glob="./*.txt",
+    loader_cls=lambda x: TextLoader(x, encoding="utf-8"),
+    show_progress=True,
+)
 data = loader.load()
 
 # embeddings = OpenAIEmbeddings(open_api_key="pk-CigHzsmOuWnIaohAxYhWfOjhuXTVOUdEQJBqmSDCWxIHjuiB")
 
-embeddings = OpenAIEmbeddings(openai_api_key=os.getenv("OPENAI_API_KEY") or "pk-CigHzsmOuWnIaohAxYhWfOjhuXTVOUdEQJBqmSDCWxIHjuiB")
+# embeddings = OpenAIEmbeddings(openai_api_key=os.getenv("OPENAI_API_KEY") or "pk-CigHzsmOuWnIaohAxYhWfOjhuXTVOUdEQJBqmSDCWxIHjuiB")
+
+embeddings = OpenAIEmbeddings(
+    openai_api_key=os.getenv("OPENAI_API_KEY")
+    or "sk-mnopqrstuvwxabcdmnopqrstuvwxabcdmnopqrst"
+)
+
 
 vectorStore = MongoDBAtlasVectorSearch.from_documents(data, embeddings, collection=collection)
