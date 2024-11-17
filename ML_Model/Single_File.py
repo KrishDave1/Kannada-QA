@@ -1,8 +1,8 @@
 import os
 
 # Specify the folder containing the .txt files
-input_folder = r"C:\Users\mitta\OneDrive - iiit-b\Documents\ML-Fiesta-Byte-Synergy-Hackathon\output\translations"  # Replace with the folder path
-output_file = "combined_output1.txt"  # Output file name
+input_folder = r"C:\Users\mitta\OneDrive - iiit-b\Documents\ML-Fiesta-Byte-Synergy-Hackathon\ML_Model\Krish\refined_data"  # Replace with the folder path
+output_file = "combined_output_ref.txt"  # Output file name
 
 # Open the output file in write mode
 with open(output_file, "w", encoding="utf-8") as outfile:
