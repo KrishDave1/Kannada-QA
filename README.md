@@ -1,5 +1,7 @@
 # Automatic Speech Recognition and Question-Answering Model
 
+### NOTE : The final file is located in /ML_Model/Ml-Fiesta.ipynb. Just run this file to get the application.Other files are all the other attempts we made while making the ML Model
+
 This repository demonstrates an integrated system for **Automatic Speech Recognition (ASR)** and **Contextual Question-Answering (QA)**. Combining cutting-edge tools like OpenAI Whisper, Hugging Face Transformers, and MongoDB Atlas Vector Search, the system provides seamless processing of audio inputs, multilingual transcription and translation, and contextual question answering with feedback mechanisms.
 
 ## Table of Contents
