@@ -17,15 +17,6 @@ This repository demonstrates an integrated system for **Automatic Speech Recogni
 
 ---
 
-## Features
-
-- **Audio Input**: Accepts audio queries for processing.
-- **Whisper Model Integration**: Transcribes audio input to text using OpenAI's Whisper.
-- **Vector Store with MongoDB**: Integrates MongoDB Atlas for storing and retrieving vectorized documents.
-- **Question-Answering Pipeline**: Uses a transformer model for generating answers based on retrieved document context.
-- **Feedback Mechanism**: Supports user feedback for answer corrections and updates.
-- **Interactive UI**: Built with Gradio for easy user interaction.
-
 ## Prerequisites
 
 - Python 3.8+
@@ -44,12 +35,12 @@ This project integrates the following:
 ---
 
 ## Key Features
-
-- **Multilingual Support:** Detects and transcribes audio in various languages, translating them to English.
-- **Efficient Audio Processing:** Handles large audio files by processing them in smaller chunks.
-- **Semantic Search:** Retrieves contextually relevant information using embeddings and vector similarity.
-- **Interactive Feedback:** Refines QA performance based on user feedback via an intuitive interface.
-- **Scalable Architecture:** Employs MongoDB Atlas for managing and querying large datasets.
+- **Audio Input**: Accepts audio queries for processing.
+- **Whisper Model Integration**: Transcribes audio input to text using OpenAI's Whisper.
+- **Vector Store with MongoDB**: Integrates MongoDB Atlas for storing and retrieving vectorized documents.
+- **Question-Answering Pipeline**: Uses a transformer model for generating answers based on retrieved document context.
+- **Feedback Mechanism**: Supports user feedback for answer corrections and updates.
+- **Interactive UI**: Built with Gradio for easy user interaction.
 
 ---
 
