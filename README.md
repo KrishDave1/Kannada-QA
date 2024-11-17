@@ -22,7 +22,19 @@ This project is a voice-based question-answering system that accepts audio input
 
 ## Installation
 
-1. **Clone the repository** (if applicable):
+1. **Clone the repository**:
    ```bash
    git clone https://github.com/valmikGit/ML-Fiesta-Byte-Synergy-Hackathon
    ```
+2. **Create a Python virtual environment**:
+    ```bash
+    python -m venv projectenv
+    ```
+3. **Activate the virtual environment**:
+    ```bash
+    projectenv\Scripts\activate
+    ```
+4. **Install the necessary requirements**:
+    ```bash
+    pip install -r final_requirements.txt
+    ```
